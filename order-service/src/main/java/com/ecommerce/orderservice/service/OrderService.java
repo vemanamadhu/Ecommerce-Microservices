@@ -23,7 +23,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClientBuilder;
 
-    public void placeOrder(OrderRequest orderRequest){
+    public String placeOrder(OrderRequest orderRequest){
         List<OrderLineItems> orderLineItemsList = orderRequest.getOrderLineItemsDtoList()
                 .stream()
                 .map(this::mapToDto)
@@ -45,6 +45,7 @@ public class OrderService {
                 allMatch(InventoryResponse::getIsInStock);
         if(allProductsInStock){
             orderRepository.save(order);
+            return "Order Successfully placed";
         }
         else{
             throw new IllegalArgumentException("Product is not in stock");
